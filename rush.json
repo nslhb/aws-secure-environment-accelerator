@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
   "rushVersion": "5.42.3",
-  "pnpmVersion": "5.15.2",
+  "pnpmVersion": "5.18.9",
   "pnpmOptions": {
     "pnpmStore": "local",
     "preventManualShrinkwrapChanges": true,
@@ -11,7 +11,8 @@
   },
   "nodeSupportedVersionRange": ">=12.13.0 <13.0.0 || >=14.15.0 <15.0.0",
   "projectFolderMinDepth": 1,
-  "projectFolderMaxDepth": 4,
+  "projectFolderMaxDepth": 5,
+  "ensureConsistentVersions": true,
   "gitPolicy": {
     "changeLogUpdateCommitMessage": "Deleting change files and updating change logs for package updates. [skip-ci]"
   },
@@ -23,441 +24,491 @@
   "projects": [
     {
       "packageName": "@aws-accelerator/installer",
-      "projectFolder": "src/installer/cdk",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/installer/cdk"
     },
     {
       "packageName": "@aws-accelerator/accelerator",
-      "projectFolder": "src/core/cdk",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/core/cdk"
     },
     {
       "packageName": "@aws-accelerator/accelerator-runtime",
-      "projectFolder": "src/core/runtime",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/core/runtime"
     },
     {
       "packageName": "@aws-accelerator/deployments",
-      "projectFolder": "src/deployments/cdk",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/deployments/cdk"
     },
     {
       "packageName": "@aws-accelerator/deployments-runtime",
-      "projectFolder": "src/deployments/runtime",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/deployments/runtime"
     },
     {
       "packageName": "@aws-accelerator/common-types",
-      "projectFolder": "src/lib/common-types",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/common-types"
     },
     {
       "packageName": "@aws-accelerator/common-outputs",
-      "projectFolder": "src/lib/common-outputs",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/common-outputs"
     },
     {
       "packageName": "@aws-accelerator/common",
-      "projectFolder": "src/lib/common",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/common"
     },
     {
       "packageName": "@aws-accelerator/common-config",
-      "projectFolder": "src/lib/common-config",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/common-config"
     },
     {
       "packageName": "@aws-accelerator/cdk-plugin-assume-role",
-      "projectFolder": "src/lib/cdk-plugin-assume-role",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/cdk-plugin-assume-role"
     },
     {
       "packageName": "@aws-accelerator/cdk-accelerator",
-      "projectFolder": "src/lib/cdk-accelerator",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/cdk-accelerator"
     },
     {
       "packageName": "@aws-accelerator/cdk-constructs",
-      "projectFolder": "src/lib/cdk-constructs",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-acm-import-certificate",
-      "packageName": "@aws-accelerator/custom-resource-acm-import-certificate",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-associate-hosted-zones",
-      "packageName": "@aws-accelerator/custom-resource-associate-hosted-zones",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-associate-resolver-rules",
-      "packageName": "@aws-accelerator/custom-resource-associate-resolver-rules",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-cfn-sleep",
-      "packageName": "@aws-accelerator/custom-resource-cfn-sleep",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-cfn-utils",
-      "packageName": "@aws-accelerator/custom-resource-cfn-utils",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-cloud-trail",
-      "packageName": "@aws-accelerator/custom-resource-cloud-trail",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-create-hosted-zone",
-      "packageName": "@aws-accelerator/custom-resource-create-hosted-zone",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-create-resolver-rule",
-      "packageName": "@aws-accelerator/custom-resource-create-resolver-rule",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-cur-report-definition",
-      "packageName": "@aws-accelerator/custom-resource-cur-report-definition",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-disassociate-hosted-zones",
-      "packageName": "@aws-accelerator/custom-resource-disassociate-hosted-zones",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ds-log-subscription",
-      "packageName": "@aws-accelerator/custom-resource-ds-log-subscription",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-ebs-default-encryption",
-      "packageName": "@aws-accelerator/custom-resource-ec2-ebs-default-encryption",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-image-finder",
-      "packageName": "@aws-accelerator/custom-resource-ec2-image-finder",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-keypair",
-      "packageName": "@aws-accelerator/custom-resource-ec2-keypair",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-launch-time",
-      "packageName": "@aws-accelerator/custom-resource-ec2-launch-time",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-marketplace-subscription-validation",
-      "packageName": "@aws-accelerator/custom-resource-ec2-marketplace-subscription-validation",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-modify-transit-gateway-attachment",
-      "packageName": "@aws-accelerator/custom-resource-ec2-modify-transit-gateway-vpc-attachment",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-vpn-attachment",
-      "packageName": "@aws-accelerator/custom-resource-ec2-vpn-attachment",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-vpn-tunnel-options",
-      "packageName": "@aws-accelerator/custom-resource-ec2-vpn-tunnel-options",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-elb-deletion-protection",
-      "packageName": "@aws-accelerator/custom-resource-elb-deletion-protection",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-guardduty-admin-setup",
-      "packageName": "@aws-accelerator/custom-resource-guardduty-admin-setup",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/cdk-constructs"
     },
     {
       "projectFolder": "src/lib/custom-resources/cdk-guardduty-create-publish",
-      "packageName": "@aws-accelerator/custom-resource-guardduty-create-publish",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "packageName": "@aws-accelerator/custom-resource-guardduty-create-publish"
     },
     {
-      "projectFolder": "src/lib/custom-resources/cdk-guardduty-enable-admin",
-      "packageName": "@aws-accelerator/custom-resource-guardduty-enable-admin",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-create-publish/runtime",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-create-publish-runtime"
     },
     {
-      "projectFolder": "src/lib/custom-resources/cdk-guardduty-get-detector",
-      "packageName": "@aws-accelerator/custom-resource-guardduty-get-detector",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-modify-transit-gateway-attachment",
+      "packageName": "@aws-accelerator/custom-resource-ec2-modify-transit-gateway-vpc-attachment"
     },
     {
-      "projectFolder": "src/lib/custom-resources/cdk-iam-create-role",
-      "packageName": "@aws-accelerator/custom-resource-iam-create-role",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-modify-transit-gateway-attachment/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ec2-modify-transit-gateway-vpc-attachment-runtime"
     },
     {
-      "projectFolder": "src/lib/custom-resources/cdk-iam-password-policy",
-      "packageName": "@aws-accelerator/custom-resource-iam-password-policy",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/custom-resources/ec2-ebs-default-encryption",
+      "packageName": "@aws-accelerator/custom-resource-ec2-ebs-default-encryption"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/ec2-ebs-default-encryption/lambda",
+      "packageName": "@aws-accelerator/custom-resource-ec2-ebs-default-encryption-runtime"
     },
     {
       "projectFolder": "src/lib/custom-resources/cdk-kms-grant",
-      "packageName": "@aws-accelerator/custom-resource-kms-grant",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "packageName": "@aws-accelerator/custom-resource-kms-grant"
     },
     {
-      "projectFolder": "src/lib/custom-resources/cdk-logs-log-group",
-      "packageName": "@aws-accelerator/custom-resource-logs-log-group",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-logs-metric-filter",
-      "packageName": "@aws-accelerator/custom-resource-logs-metric-filter",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-logs-resource-policy",
-      "packageName": "@aws-accelerator/custom-resource-logs-resource-policy",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-macie-create-member",
-      "packageName": "@aws-accelerator/custom-resource-macie-create-member",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-macie-enable-admin",
-      "packageName": "@aws-accelerator/custom-resource-macie-enable-admin",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-macie-enable",
-      "packageName": "@aws-accelerator/custom-resource-macie-enable",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-macie-export-config",
-      "packageName": "@aws-accelerator/custom-resource-macie-export-config",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-macie-update-config",
-      "packageName": "@aws-accelerator/custom-resource-macie-update-config",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-macie-update-session",
-      "packageName": "@aws-accelerator/custom-resource-macie-update-session",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-organization",
-      "packageName": "@aws-accelerator/custom-resource-organization",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-r53-dns-endpoint-ips",
-      "packageName": "@aws-accelerator/custom-resource-r53-dns-endpoint-ips",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-resource-cleanup",
-      "packageName": "@aws-accelerator/custom-resource-cleanup",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-s3-copy-files",
-      "packageName": "@aws-accelerator/custom-resource-s3-copy-files",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-s3-public-access-block",
-      "packageName": "@aws-accelerator/custom-resource-s3-public-access-block",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-s3-put-bucket-replication",
-      "packageName": "@aws-accelerator/custom-resource-s3-put-bucket-replication",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-s3-put-bucket-versioning",
-      "packageName": "@aws-accelerator/custom-resource-s3-put-bucket-versioning",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-s3-template",
-      "packageName": "@aws-accelerator/custom-resource-s3-template",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-s3-update-logarchive-bucket-policy",
-      "packageName": "@aws-accelerator/custom-resource-s3-update-logarchive-policy",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-security-hub-accept-invites",
-      "packageName": "@aws-accelerator/custom-resource-security-hub-accept-invites",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-security-hub-disable-controls",
-      "packageName": "@aws-accelerator/custom-resource-security-hub-disable-controls",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-security-hub-enable",
-      "packageName": "@aws-accelerator/custom-resource-security-hub-enable",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-security-hub-send-invites",
-      "packageName": "@aws-accelerator/custom-resource-security-hub-send-invites",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ssm-create-document",
-      "packageName": "@aws-accelerator/custom-resource-ssm-create-document",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ssm-document-share",
-      "packageName": "@aws-accelerator/custom-resource-ssm-document-share",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ssm-increase-throughput",
-      "packageName": "@aws-accelerator/custom-resource-ssm-increase-throughput",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ssm-session-manager-document",
-      "packageName": "@aws-accelerator/custom-resource-ssm-session-manager-document",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-transit-gateway-accept-peering",
-      "packageName": "@aws-accelerator/custom-resource-accept-tgw-peering-attachment",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-transit-gateway-create-peering",
-      "packageName": "@aws-accelerator/custom-resource-create-tgw-peering-attachment",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-vpc-default-security-group",
-      "packageName": "@aws-accelerator/custom-resource-vpc-default-security-group",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/cdk-ec2-ebs-default-encryption",
-      "packageName": "@aws-accelerator/custom-resource-ec2-ebs-default-encryption",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
-    },
-    {
-      "projectFolder": "src/lib/custom-resources/logs-add-subscription-filter",
-      "packageName": "@aws-accelerator/custom-resource-logs-add-subscription-filter",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/custom-resources/cdk-kms-grant/runtime",
+      "packageName": "@aws-accelerator/custom-resource-kms-grant-runtime"
     },
     {
       "projectFolder": "src/lib/custom-resources/runtime-cfn-response",
-      "packageName": "@aws-accelerator/custom-resource-runtime-cfn-response",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "packageName": "@aws-accelerator/custom-resource-runtime-cfn-response"
     },
     {
-      "projectFolder": "src/lib/custom-resources/runtime-cfn-tags",
-      "packageName": "@aws-accelerator/custom-resource-runtime-cfn-tags",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "projectFolder": "src/lib/custom-resources/cdk-iam-create-role",
+      "packageName": "@aws-accelerator/custom-resource-iam-create-role"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-iam-create-role/runtime",
+      "packageName": "@aws-accelerator/custom-resource-iam-create-role-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-vpn-attachment",
+      "packageName": "@aws-accelerator/custom-resource-ec2-vpn-attachment"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-associate-hosted-zones",
+      "packageName": "@aws-accelerator/custom-resource-associate-hosted-zones"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-associate-hosted-zones/runtime",
+      "packageName": "@aws-accelerator/custom-resource-associate-hosted-zones-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-vpn-tunnel-options",
+      "packageName": "@aws-accelerator/custom-resource-ec2-vpn-tunnel-options"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-vpn-tunnel-options/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ec2-vpn-tunnel-options-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-transit-gateway-create-peering",
+      "packageName": "@aws-accelerator/custom-resource-create-tgw-peering-attachment"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-transit-gateway-create-peering/runtime",
+      "packageName": "@aws-accelerator/custom-resource-create-tgw-peering-attachment-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-resource-cleanup",
+      "packageName": "@aws-accelerator/custom-resource-cleanup"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-resource-cleanup/runtime",
+      "packageName": "@aws-accelerator/custom-resource-cleanup-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cur-report-definition",
+      "packageName": "@aws-accelerator/custom-resource-cur-report-definition"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cur-report-definition/runtime",
+      "packageName": "@aws-accelerator/custom-resource-cur-report-definition-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-image-finder",
+      "packageName": "@aws-accelerator/custom-resource-ec2-image-finder"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-image-finder/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ec2-image-finder-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-document-share",
+      "packageName": "@aws-accelerator/custom-resource-ssm-document-share"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-document-share/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ssm-document-share-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-session-manager-document",
+      "packageName": "@aws-accelerator/custom-resource-ssm-session-manager-document"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-session-manager-document/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ssm-session-manager-document-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ds-log-subscription",
+      "packageName": "@aws-accelerator/custom-resource-ds-log-subscription"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-increase-throughput",
+      "packageName": "@aws-accelerator/custom-resource-ssm-increase-throughput"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-increase-throughput/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ssm-increase-throughput-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-update-session",
+      "packageName": "@aws-accelerator/custom-resource-macie-update-session"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-update-session/runtime",
+      "packageName": "@aws-accelerator/custom-resource-macie-update-session-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-export-config",
+      "packageName": "@aws-accelerator/custom-resource-macie-export-config"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-export-config/runtime",
+      "packageName": "@aws-accelerator/custom-resource-macie-export-config-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-associate-resolver-rules",
+      "packageName": "@aws-accelerator/custom-resource-associate-resolver-rules"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-associate-resolver-rules/runtime",
+      "packageName": "@aws-accelerator/custom-resource-associate-resolver-rules-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cfn-utils",
+      "packageName": "@aws-accelerator/custom-resource-cfn-utils"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-disassociate-hosted-zones",
+      "packageName": "@aws-accelerator/custom-resource-disassociate-hosted-zones"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-disassociate-hosted-zones/runtime",
+      "packageName": "@aws-accelerator/custom-resource-disassociate-hosted-zones-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-launch-time",
+      "packageName": "@aws-accelerator/custom-resource-ec2-launch-time"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-launch-time/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ec2-launch-time-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-transit-gateway-accept-peering",
+      "packageName": "@aws-accelerator/custom-resource-accept-tgw-peering-attachment"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-transit-gateway-accept-peering/runtime",
+      "packageName": "@aws-accelerator/custom-resource-accept-tgw-peering-attachment-runtime"
     },
     {
       "projectFolder": "src/lib/custom-resources/runtime-webpack-base",
-      "packageName": "@aws-accelerator/custom-resource-runtime-webpack-base",
-      "shouldPublish": true,
-      "versionPolicyName": "locked"
+      "packageName": "@aws-accelerator/custom-resource-runtime-webpack-base"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-get-detector",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-get-detector"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-get-detector/runtime",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-get-detector-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-disable-controls",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-disable-controls"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-disable-controls/runtime",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-disable-controls-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-enable-admin",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-enable-admin"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-enable-admin/runtime",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-enable-admin-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-send-invites",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-send-invites"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-send-invites/runtime",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-send-invites-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cfn-sleep",
+      "packageName": "@aws-accelerator/custom-resource-cfn-sleep"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cfn-sleep/runtime",
+      "packageName": "@aws-accelerator/custom-resource-cfn-sleep-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-template",
+      "packageName": "@aws-accelerator/custom-resource-s3-template"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-template/runtime",
+      "packageName": "@aws-accelerator/custom-resource-s3-template-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-enable",
+      "packageName": "@aws-accelerator/custom-resource-macie-enable"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-enable/runtime",
+      "packageName": "@aws-accelerator/custom-resource-macie-enable-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-enable",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-enable"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-enable/runtime",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-enable-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-organization",
+      "packageName": "@aws-accelerator/custom-resource-organization"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-admin-setup",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-admin-setup"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-guardduty-admin-setup/runtime",
+      "packageName": "@aws-accelerator/custom-resource-guardduty-admin-setup-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-copy-files",
+      "packageName": "@aws-accelerator/custom-resource-s3-copy-files"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-copy-files/runtime",
+      "packageName": "@aws-accelerator/custom-resource-s3-copy-files-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-put-bucket-versioning",
+      "packageName": "@aws-accelerator/custom-resource-s3-put-bucket-versioning"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-put-bucket-versioning/runtime",
+      "packageName": "@aws-accelerator/custom-resource-s3-put-bucket-versioning-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-create-member",
+      "packageName": "@aws-accelerator/custom-resource-macie-create-member"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-create-member/runtime",
+      "packageName": "@aws-accelerator/custom-resource-macie-create-member-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-keypair",
+      "packageName": "@aws-accelerator/custom-resource-ec2-keypair"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-keypair/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ec2-keypair-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-create-resolver-rule",
+      "packageName": "@aws-accelerator/custom-resource-create-resolver-rule"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-create-resolver-rule/runtime",
+      "packageName": "@aws-accelerator/custom-resource-create-resolver-rule-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-accept-invites",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-accept-invites"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-security-hub-accept-invites/runtime",
+      "packageName": "@aws-accelerator/custom-resource-security-hub-accept-invites-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/logs-add-subscription-filter",
+      "packageName": "@aws-accelerator/custom-resource-logs-add-subscription-filter"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/logs-add-subscription-filter/runtime",
+      "packageName": "@aws-accelerator/custom-resource-logs-add-subscription-filter-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/logs-add-subscription-filter/runtime-event-trigger",
+      "packageName": "@aws-accelerator/custom-resource-logs-add-subscription-filter-cloudwatch-event-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-logs-log-group",
+      "packageName": "@aws-accelerator/custom-resource-logs-log-group"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-logs-log-group/runtime",
+      "packageName": "@aws-accelerator/custom-resource-logs-log-group-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-create-hosted-zone",
+      "packageName": "@aws-accelerator/custom-resource-create-hosted-zone"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-create-hosted-zone/runtime",
+      "packageName": "@aws-accelerator/custom-resource-create-hosted-zone-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cloud-trail",
+      "packageName": "@aws-accelerator/custom-resource-cloud-trail"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-cloud-trail/runtime",
+      "packageName": "@aws-accelerator/custom-resource-cloud-trail-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-public-access-block",
+      "packageName": "@aws-accelerator/custom-resource-s3-public-access-block"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-marketplace-subscription-validation",
+      "packageName": "@aws-accelerator/custom-resource-ec2-marketplace-subscription-validation"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ec2-marketplace-subscription-validation/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ec2-marketplace-subscription-validation-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-enable-admin",
+      "packageName": "@aws-accelerator/custom-resource-macie-enable-admin"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-enable-admin/runtime",
+      "packageName": "@aws-accelerator/custom-resource-macie-enable-admin-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/runtime-cfn-tags",
+      "packageName": "@aws-accelerator/custom-resource-runtime-cfn-tags"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-acm-import-certificate",
+      "packageName": "@aws-accelerator/custom-resource-acm-import-certificate"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-acm-import-certificate/runtime",
+      "packageName": "@aws-accelerator/custom-resource-acm-import-certificate-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-logs-metric-filter",
+      "packageName": "@aws-accelerator/custom-resource-logs-metric-filter"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-logs-metric-filter/runtime",
+      "packageName": "@aws-accelerator/custom-resource-logs-metric-filter-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-elb-deletion-protection",
+      "packageName": "@aws-accelerator/custom-resource-elb-deletion-protection"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-vpc-default-security-group",
+      "packageName": "@aws-accelerator/custom-resource-vpc-default-security-group"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-vpc-default-security-group/runtime",
+      "packageName": "@aws-accelerator/custom-resource-vpc-default-security-group-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-create-document",
+      "packageName": "@aws-accelerator/custom-resource-ssm-create-document"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-ssm-create-document/runtime",
+      "packageName": "@aws-accelerator/custom-resource-ssm-create-document-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-put-bucket-replication",
+      "packageName": "@aws-accelerator/custom-resource-s3-put-bucket-replication"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-put-bucket-replication/runtime",
+      "packageName": "@aws-accelerator/custom-resource-s3-put-bucket-replication-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-logs-resource-policy",
+      "packageName": "@aws-accelerator/custom-resource-logs-resource-policy"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-r53-dns-endpoint-ips",
+      "packageName": "@aws-accelerator/custom-resource-r53-dns-endpoint-ips"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-update-config",
+      "packageName": "@aws-accelerator/custom-resource-macie-update-config"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-macie-update-config/runtime",
+      "packageName": "@aws-accelerator/custom-resource-macie-update-config-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-update-logarchive-bucket-policy",
+      "packageName": "@aws-accelerator/custom-resource-s3-update-logarchive-policy"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-s3-update-logarchive-bucket-policy/runtime",
+      "packageName": "@aws-accelerator/custom-resource-s3-update-logarchive-policy-runtime"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-iam-password-policy",
+      "packageName": "@aws-accelerator/custom-resource-iam-password-policy"
+    },
+    {
+      "projectFolder": "src/lib/custom-resources/cdk-iam-password-policy/runtime",
+      "packageName": "@aws-accelerator/custom-resource-iam-password-policy-runtime"
     }
   ]
 }
