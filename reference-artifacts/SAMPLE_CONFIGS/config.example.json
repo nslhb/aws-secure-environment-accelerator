@@ -50,6 +50,7 @@
       "account": "security",
       "region": "${HOME_REGION}",
       "security-hub-excl-regions": ["ap-northeast-3"],
+      "security-hub": true,
       "guardduty": true,
       "guardduty-excl-regions": ["ap-northeast-3"],
       "guardduty-s3": true,
@@ -1863,7 +1864,7 @@
             }
           }
         ],
-        "firewall-manager": {
+        "xxfirewall-manager": {
           "name": "FirewallMgr",
           "image-id": "ami-094c9efc372e646e0",
           "instance-sizes": "c5.large",

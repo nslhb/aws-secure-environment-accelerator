@@ -131,7 +131,7 @@ export class PrebuiltCdkDeployProject extends CdkDeployProjectBase {
     fs.writeFileSync(
       path.join(this.projectTmpDir, 'Dockerfile'),
       [
-        'FROM node:12.21-slim as builder',
+        'FROM public.ecr.aws/bitnami/node:12',
         // Install the package manager
         ...installPackageManagerCommands(props.packageManager).map(cmd => `RUN ${cmd}`),
         `WORKDIR ${appDir}`,
@@ -173,7 +173,7 @@ export class PrebuiltCdkDeployProject extends CdkDeployProjectBase {
  */
 function installPackageManagerCommands(packageManager: PackageManager) {
   if (packageManager === 'pnpm') {
-    return ['npm install --global pnpm'];
+    return ['npm install --global pnpm@5.18.9'];
   }
   throw new Error(`Unknown package manager ${packageManager}`);
 }
