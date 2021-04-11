@@ -437,7 +437,7 @@ function createDefaultEbsEncryptionKey(props: DefaultsStep1Props): AccountRegion
           effect: iam.Effect.ALLOW,
           principals: [
             new iam.ArnPrincipal(
-              `arn:aws:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
+              `arn:${cdk.Aws.PARTITION}:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
             ),
           ],
           actions: ['kms:Encrypt', 'kms:Decrypt', 'kms:ReEncrypt*', 'kms:GenerateDataKey*', 'kms:DescribeKey'],
@@ -450,7 +450,7 @@ function createDefaultEbsEncryptionKey(props: DefaultsStep1Props): AccountRegion
           effect: iam.Effect.ALLOW,
           principals: [
             new iam.ArnPrincipal(
-              `arn:aws:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
+              `arn:${cdk.Aws.PARTITION}:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
             ),
           ],
           actions: ['kms:CreateGrant'],

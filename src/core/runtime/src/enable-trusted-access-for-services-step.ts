@@ -79,6 +79,20 @@ export const handler = async (input: EnableTrustedAccessForServicesInput) => {
   }
   console.log('AWS Service Linked Role created for Access Analyzer service in master account.');
 
+  try {
+    await iam.createServiceLinkedRole('autoscaling.amazonaws.com');
+  } catch (e) {
+    if (
+      e.message ===
+      'Service role name AWSServiceRoleForAutoScaling has been taken in this account, please try a different suffix.'
+    ) {
+      // ignore exception
+    } else {
+      throw e;
+    }
+  }
+  console.log('AWS Service Linked Role created for AWSServiceRoleForAutoScaling service in master account.');
+
   await org.registerDelegatedAdministrator(securityAccountId, 'access-analyzer.amazonaws.com');
   console.log('Security account registered as delegated administrator for Access Analyzer in the organization.');
 
