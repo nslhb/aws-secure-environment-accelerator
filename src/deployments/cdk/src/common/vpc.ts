@@ -544,8 +544,7 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
           const routeTableId = this.routeTableNameToIdMap[natRoute];
           if (
             !routeExistsForNatGW(subnetConfig.az ? undefined : natSubnet.az, natRoute) ||
-            natRoute.toLowerCase().includes('internal') ||
-            natRoute.toLowerCase().includes('data')
+            !natRoute.includes('NATGW')
           ) {
             // Skipping Route Association of NATGW if no route specified in subnet config
             console.log(

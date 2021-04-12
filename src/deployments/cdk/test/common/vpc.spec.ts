@@ -435,6 +435,11 @@ test('the VPC creation should create the NAT gateway', () => {
       },
       {
         name: 'Private',
+        routes: [
+          {
+            target: 'NATGW',
+          },
+        ],
       },
     ],
   });
