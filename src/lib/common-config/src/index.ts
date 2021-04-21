@@ -78,7 +78,7 @@ export const PcxRouteConfigType = t.interface({
 });
 
 export const RouteConfig = t.interface({
-  destination: t.union([t.string, PcxRouteConfigType]), // TODO Can be string or destination in another account
+  destination: optional(t.union([t.string, PcxRouteConfigType])), // TODO Can be string or destination in another account
   target: NonEmptyString,
   name: optional(t.string),
   az: optional(t.string),
