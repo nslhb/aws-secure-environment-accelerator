@@ -18,6 +18,7 @@ import { Account } from '../../utils/accounts';
 import { createDefaultS3Bucket, createDefaultS3Key } from './shared';
 import { overrideLogicalId } from '../../utils/cdk';
 import { getVpcSharedAccountKeys } from '../../common/vpc-subnet-sharing';
+import { CfnCondition } from '@aws-cdk/core';
 
 export type AccountRegionEbsEncryptionKeys = { [accountKey: string]: { [region: string]: kms.Key } | undefined };
 
@@ -428,6 +429,37 @@ function createDefaultEbsEncryptionKey(props: DefaultsStep1Props): AccountRegion
           principals: [new iam.AccountPrincipal(cdk.Aws.ACCOUNT_ID)],
           actions: ['kms:*'],
           resources: ['*'],
+        }),
+      );
+
+      key.addToResourcePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          principals: [
+            new iam.ArnPrincipal(
+              `arn:${cdk.Aws.PARTITION}:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
+            ),
+          ],
+          actions: ['kms:Encrypt', 'kms:Decrypt', 'kms:ReEncrypt*', 'kms:GenerateDataKey*', 'kms:DescribeKey'],
+          resources: ['*'],
+        }),
+      );
+
+      key.addToResourcePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          principals: [
+            new iam.ArnPrincipal(
+              `arn:${cdk.Aws.PARTITION}:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
+            ),
+          ],
+          actions: ['kms:CreateGrant'],
+          resources: ['*'],
+          conditions: {
+            Bool: {
+              'kms:GrantIsForAWSResource': 'true',
+            },
+          },
         }),
       );
 
