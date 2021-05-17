@@ -18,7 +18,6 @@ import { Account } from '../../utils/accounts';
 import { createDefaultS3Bucket, createDefaultS3Key } from './shared';
 import { overrideLogicalId } from '../../utils/cdk';
 import { getVpcSharedAccountKeys } from '../../common/vpc-subnet-sharing';
-import { CfnCondition } from '@aws-cdk/core';
 
 export type AccountRegionEbsEncryptionKeys = { [accountKey: string]: { [region: string]: kms.Key } | undefined };
 
