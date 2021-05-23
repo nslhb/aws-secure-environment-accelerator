@@ -34,6 +34,7 @@ import * as transitGateway from '../deployments/transit-gateway';
 import * as centralEndpoints from '../deployments/central-endpoints';
 import { CfnResourceStackCleanupOutput } from '../deployments/cleanup/outputs';
 import { VpcOutputFinder, VpcSubnetOutput } from '@aws-accelerator/common-outputs/src/vpc';
+import { TransitGatewayAttachmentOutputFinder } from '@aws-accelerator/common-outputs/src/transit-gateway';
 
 export interface IamPolicyArtifactsOutput {
   bucketArn: string;
@@ -125,7 +126,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
       return;
     }
     const peeringRole = new iam.Role(accountStack, 'PeeringRole', {
-      roleName,
+      roleName: createRoleName(roleName),
       assumedBy: new iam.ArnPrincipal(
         `arn:aws:iam::${getAccountId(accounts, targetAccount)}:role/${context.acceleratorExecutionRoleName}`,
       ),
@@ -194,6 +195,9 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
 
   const subscriptionCheckDone: string[] = [];
   const dnsLogGroupsAccountAndRegion: { [accoutKey: string]: boolean } = {};
+  const existingAttachments = TransitGatewayAttachmentOutputFinder.findAll({
+    outputs,
+  });
   // Create all the VPCs for accounts and organizational units
   for (const { ouKey, accountKey, vpcConfig, deployments } of acceleratorConfig.getVpcConfigs()) {
     let createPolicy = false;
@@ -230,6 +234,7 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
       acceleratorName,
       installerVersion,
       vpcOutput,
+      existingAttachments,
     });
 
     const pcxConfig = vpcConfig.pcx;
