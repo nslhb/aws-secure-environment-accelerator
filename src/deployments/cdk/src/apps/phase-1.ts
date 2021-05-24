@@ -125,8 +125,8 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     if (existing) {
       return;
     }
-    const peeringRole = new iam.Role(accountStack, `PeeringRole-${sourceVpcConfig.region}`, {
-      roleName: roleName,
+    const peeringRole = new iam.Role(accountStack, 'PeeringRole', {
+      roleName,
       assumedBy: new iam.ArnPrincipal(
         `arn:aws:iam::${getAccountId(accounts, targetAccount)}:role/${context.acceleratorExecutionRoleName}`,
       ),
