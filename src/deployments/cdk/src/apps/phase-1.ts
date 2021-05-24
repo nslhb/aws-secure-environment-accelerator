@@ -125,19 +125,19 @@ export async function deploy({ acceleratorConfig, accountStacks, accounts, conte
     if (existing) {
       return;
     }
-    const peeringRole = new iam.Role(accountStack, 'PeeringRole', {
-      roleName,
-      assumedBy: new iam.ArnPrincipal(
-        `arn:aws:iam::${getAccountId(accounts, targetAccount)}:role/${context.acceleratorExecutionRoleName}`,
-      ),
-    });
-
-    peeringRole.addToPrincipalPolicy(
-      new iam.PolicyStatement({
-        resources: ['*'],
-        actions: ['ec2:AcceptVpcPeeringConnection'],
-      }),
-    );
+    // const peeringRole = new iam.Role(accountStack, 'PeeringRole', {
+    //   roleName,
+    //   assumedBy: new iam.ArnPrincipal(
+    //     `arn:aws:iam::${getAccountId(accounts, targetAccount)}:role/${context.acceleratorExecutionRoleName}`,
+    //   ),
+    // });
+    //
+    // peeringRole.addToPrincipalPolicy(
+    //   new iam.PolicyStatement({
+    //     resources: ['*'],
+    //     actions: ['ec2:AcceptVpcPeeringConnection'],
+    //   }),
+    // );
   };
 
   // Auxiliary method to create a VPC in the account with given account key
