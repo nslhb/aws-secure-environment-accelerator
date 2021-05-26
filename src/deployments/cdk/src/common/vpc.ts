@@ -523,7 +523,7 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
             dynamoRoutes.push(routeTableObj);
             continue;
           } else if (route.target === 'TGW' && tgw && tgwAttachment) {
-            const tgwRoute = new ec2.CfnRoute(this, `${routeTableName}_${route.target}`, {
+            const tgwRoute = new ec2.CfnRoute(this, `${routeTableName}_${route.target}_${route.name}`, {
               routeTableId: routeTableObj,
               destinationCidrBlock: route.destination as string,
               transitGatewayId: tgw.tgwId,
