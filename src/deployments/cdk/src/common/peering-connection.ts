@@ -73,8 +73,13 @@ export namespace PeeringConnection {
         });
         // Find the PCX output that contains the PCX route's VPC
         const peerVpcOutput = peerVpcOutputs.find(output => {
-          const pcxVpc = output.vpcs.find(vpc => vpc.accountKey === pcxRoute.account && vpc.vpcName === vpcOutput.vpcName);
-          return !!pcxVpc;
+          const sourcePcxVpc = output.vpcs.find(
+            vpc => vpc.accountKey === pcxRoute.account && vpc.vpcName === pcxRoute.vpc,
+          );
+          const targetPcxVpc = output.vpcs.find(
+            vpc => vpc.accountKey === accountKey && vpc.vpcName === vpcConfig?.name!,
+          );
+          return !!sourcePcxVpc && !!targetPcxVpc;
         });
         const pcxId = peerVpcOutput?.pcxId;
         if (!pcxId) {
@@ -86,7 +91,7 @@ export namespace PeeringConnection {
           if (subnet.disabled || !subnet.cidr) {
             continue;
           }
-          new ec2.CfnRoute(this, `${routeTable?.name}_pcx_${pcxRoute.vpc}_${targetSubnet.name}_${index}`, {
+          new ec2.CfnRoute(this, `${routeTable?.name}_pcx_${pcxRoute.vpc}_${index}`, {
             routeTableId,
             destinationCidrBlock: subnet.cidr.toCidrString(),
             vpcPeeringConnectionId: pcxId,
