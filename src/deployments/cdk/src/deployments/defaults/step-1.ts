@@ -431,6 +431,37 @@ function createDefaultEbsEncryptionKey(props: DefaultsStep1Props): AccountRegion
         }),
       );
 
+      key.addToResourcePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          principals: [
+            new iam.ArnPrincipal(
+              `arn:${cdk.Aws.PARTITION}:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
+            ),
+          ],
+          actions: ['kms:Encrypt', 'kms:Decrypt', 'kms:ReEncrypt*', 'kms:GenerateDataKey*', 'kms:DescribeKey'],
+          resources: ['*'],
+        }),
+      );
+
+      key.addToResourcePolicy(
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          principals: [
+            new iam.ArnPrincipal(
+              `arn:${cdk.Aws.PARTITION}:iam::${cdk.Aws.ACCOUNT_ID}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling`,
+            ),
+          ],
+          actions: ['kms:CreateGrant'],
+          resources: ['*'],
+          conditions: {
+            Bool: {
+              'kms:GrantIsForAWSResource': 'true',
+            },
+          },
+        }),
+      );
+
       // Enable default EBS encryption
       new EbsDefaultEncryption(accountStack, 'EbsDefaultEncryptionSet', {
         key,
