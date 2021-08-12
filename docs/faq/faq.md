@@ -36,6 +36,9 @@
     - [1.6.4. Why do we have rsyslog servers? I thought everything was sent to CloudWatch?](#164-why-do-we-have-rsyslog-servers-i-thought-everything-was-sent-to-cloudwatch)
     - [1.6.5. Can you deploy the solution without Fortinet Firewall Licenses?](#165-can-you-deploy-the-solution-without-fortinet-firewall-licenses)
     - [1.6.6. I installed additional software on my Accelerator deployed RDGW / rsyslog host, where did it go?](#166-i-installed-additional-software-on-my-accelerator-deployed-rdgw--rsyslog-host-where-did-it-go)
+    - [1.6.7. Some sample configurations provide NACLs and Security Groups. Is that enough?](#167-some-sample-configurations-provide-nacls-and-security-groups-is-that-enough)
+    - [1.6.8. Can I deploy the solution as the account root user?](#168-can-i-deploy-the-solution-as-the-account-root-user)
+    - [1.6.9. Is the Organizational Management root account monitored similarly to the other accounts in the organization?](#169-is-the-organizational-management-root-account-monitored-similarly-to-the-other-accounts-in-the-organization)
 
 ## 1.1. Operational Activities
 
@@ -69,19 +72,21 @@
   - create, rename, modify, apply and remove SCP's
 - What can't I do:
   - modify Accelerator controlled SCP's
-  - add/remove SCP's on top-level OU's (these are Accelerator controlled)
-    - users can change SCP's on non-top-level ou's and accounts as they please
+  - add/remove SCP's on top-level OU's (these are Accelerator controlled) or specific accounts that have Accelerator controlled SCPs
+    - users can change SCP's on non-top-level ou's and non-Accelerator controlled accounts as they please
   - move an AWS account between top-level ou's (i.e. `Sandbox` to `Prod` is a security violation)
     - moving between `Prod/sub-ou-1` to `Prod/sub-ou2` or `Prod/sub-ou2/sub-ou2a/sub-ou2ab` is fully supported
   - create a top-level ou (need to validate, as they require config file entries)
   - remove quarantine SCP from newly created accounts
   - we do not support forward slashes (`/`) in ou names, even though the AWS platform does
 - More details:
+  - If an AWS account is renamed, an account email is changed, or an OU is renamed, on the next state machine execution, the config file will automatically be updated.
   - If you edit an Accelerator controlled SCP through Organizations, we will reset it per what is defined in the Accelerator configuration files.
-  - If you add/remove an SCP from a top-level ou, we will put them back as defined in the Accelerator configuration file.
+  - If you add/remove an SCP from a top-level ou or Accelerator controlled account, we will put them back as defined in the Accelerator configuration file.
   - If you move an account between top-level ou's, we will put it back to its original designated top-level ou.
-  - The Accelerator fully supports nested ou's, customers can create any depth ou structure in AWS Organizations and add/remove/change SCP's _below_ the top-level as they desire or move accounts between these ou's without restriction. Users can create ou's to the full AWS ou structure/depth.
+  - The Accelerator fully supports nested ou's, customers can create any depth ou structure in AWS Organizations and add/remove/change SCP's _below_ the top-level as they desire or move accounts between these ou's without restriction. Users can create ou's to the full AWS ou structure/depth
   - Except for the Quarantine SCP applied to specific accounts, we do not 'control' SCP's below the top level, customers can add/create/customize SCP's
+    - as of v1.3.3 customers can optionally control account level SCP's through the configuration file
 
 ### 1.1.3. How do I make changes to items I defined in the Accelerator configuration file during installation?
 
@@ -207,11 +212,13 @@ Example:
 
 ### 1.2.2. Is it possible to deploy the Accelerator on top of an AWS Organization that I have already installed the AWS Landing Zone (ALZ) solution into?
 
-Existing ALZ customers are required to uninstall their ALZ deployment before deploying the Accelerator. Please work with your AWS account team to find the best mechanism to uninstall the ALZ solution (procedures and scripts exist). Additionally, please reference section 4 of the Instation and Upgrade Guide.
+Existing ALZ customers are required to uninstall their ALZ deployment before deploying the Accelerator. Please work with your AWS account team to find the best mechanism to uninstall the ALZ solution (procedures and scripts exist). Additionally, please reference section 4 of the Instation and Upgrade Guide.  It may be easier to migrate AWS accounts to a new Accelerator Organization, per the process detailed in FAQ #1.2.3.
 
 ### 1.2.3. What if I want to move an account from an AWS Organization that has the ALZ deployed into an AWS Organization running the Accelerator?
 
 Before removing the AWS account from the source organization, terminate the AWS Service Catalog product associated with the member account that you're interested in moving. Ensuring the product terminates successfully and that there aren't any remaining CloudFormation stacks in the account that were deployed by the ALZ. You can then remove the account from the existing Organization and invite it into the new organization. Accounts invited into the Organization do NOT get the `Deny All` SCP applied, as we do not want to break existing running workloads. Moving the newly invited account into its destination OU will trigger the state machine and result in the account being ingested into the Accelerator and having the guardrails applied per the target OU persona.
+
+For a detailed procedure, please review this [document](../operations/operations-import-ALZAccount.md).
 
 ## 1.3. End User Enviroment
 
@@ -404,6 +411,24 @@ The RDGW and rsyslog hosts are members of auto-scaling groups. These auto-scalin
 Customers wanting to install additional software on these instances should either a) update the automated deployment scripts to install the new software on new instance launch, or b) create and specify a custom AMI in the Accelerator configuration file which has the software pre-installed ensuring they are also managing patch compliance on the instance through some other mechanism.
 
 At any time, customers can terminate the RDGW or rsyslog hosts and they will automatically be re-created from the base images with the latest patch available at the time of the last Accelerator State Machine execution.
+
+### 1.6.7. Some sample configurations provide NACLs and Security Groups. Is that enough?
+
+The Accelerator provided sample security groups 
+
+Security group egress rules are often used in 'allow all' mode (`0.0.0.0/0`), with the focus primarily being on consistently whitelisting required ingress traffic (centralized ingress/egress controls are in-place using the perimeter firewalls).  This ensures day to day activities like patching, access to DNS, or to directory services access can function on instances without friction. 
+
+The Accelerator provided sample security groups in the workload accounts offer a good balance that considers both security, ease of operations, and frictionless development.  They allow developers to focus on developing, enabling them to simply use the pre-created security constructs for their workloads, and avoid the creation of wide-open security groups.  Developers can equally choose to create more appropriate least-privilege security groups more suitable for their application, if they are skilled in this area.  It is expected as an application is promoted through the SDLC cycle from Dev through Test to Prod, these security groups will be further refined by the extended customers teams to further reduce privilege, as appropriate.  It is expected that each customer will review and tailor their Security Groups based on their own security requirements.  The provided security groups ensures day to day activities like patching, access to DNS, or to directory services access can function on instances without friction, with the understanding further protections are providing by the central ingress/egress firewalls.
+
+The use of NACLs are general discouraged, but leveraged in this architecture as a defense-in-depth mechanism.  Security groups should be used as the primary access control mechanism.  As with security groups, we encourage customers to review and tailor their NACLs based on their own security requirements.
+
+### 1.6.8. Can I deploy the solution as the account root user?
+
+No, you cannot install as the root user.  The root user has no ability to assume roles which is a requirement to configure the sub-accounts and will prevent the deployment. As per the [installation instructions](../installation/installation.md#231-general), you require an IAM user with the `AdministratorAccess` policy attached.
+
+### 1.6.9. Is the Organizational Management root account monitored similarly to the other accounts in the organization?
+
+Yes, all accounts including the Organization Management or root account have the same monitoring and logging services enabled. When supported, AWS security services like GuardDuty, Macie, and Security Hub have their delegated administrator account configured as the "security" account.  These tools can be used within each local account (including the Organization Management account) within the organization to gain account level visibility or within the Security account for Organization wide visibility.  For more information about monitoring and logging refer to [architecture documentation](../architectures/pbmm/architecture.md#7-logging-and-monitoring).
 
 ---
 

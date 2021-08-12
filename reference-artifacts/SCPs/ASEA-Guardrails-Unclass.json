@@ -38,6 +38,10 @@
         "ec2:DisassociateRouteTable",
         "ec2:AllocateAddress",
         "ec2:AssociateAddress",
+        "ec2:ModifyImageAttribute",
+        "ec2:ModifySnapshotAttribute",
+        "rds:ModifyDBSnapshotAttribute",
+        "rds:ModifyDBClusterSnapshotAttribute",
         "globalaccelerator:Create*",
         "globalaccelerator:Update*",
         "kms:ScheduleKeyDeletion",
@@ -74,6 +78,7 @@
       "Effect": "Deny",
       "NotAction": [
         "a4b:*",
+        "access-analyzer:ValidatePolicy",
         "aws-marketplace-management:*",
         "aws-marketplace:*",
         "aws-portal:*",
@@ -92,8 +97,6 @@
         "globalaccelerator:*",
         "health:*",
         "iam:*",
-        "importexport:*",
-        "mobileanalytics:*",
         "networkmanager:*",
         "organizations:*",
         "pricing:*",
@@ -109,8 +112,7 @@
         "trustedadvisor:*",
         "waf-regional:*",
         "waf:*",
-        "wafv2:*",
-        "wellarchitected:*"
+        "wafv2:*"
       ],
       "Resource": "*",
       "Condition": {

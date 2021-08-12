@@ -108,6 +108,7 @@ async function createCustomerGateways(props: {
 
   const firewallCgwName = firewallConfig['fw-cgw-name'];
   const firewallCgwAsn = firewallConfig['fw-cgw-asn'];
+  const firewallCgwRouting = firewallConfig['fw-cgw-routing'].toLowerCase();
 
   const addTagsDependencies = [];
   const addTagsToResources: AddTagsToResource[] = [];
@@ -127,13 +128,14 @@ async function createCustomerGateways(props: {
       customerGateway = new ec2.CfnCustomerGateway(scope, `${prefix}_cgw`, {
         type: 'ipsec.1',
         ipAddress: port.eipIpAddress,
-        bgpAsn: firewallCgwAsn,
+        bgpAsn: firewallCgwRouting === 'dynamic' ? firewallCgwAsn : 65000,
       });
 
       vpnConnection = new ec2.CfnVPNConnection(scope, `${prefix}_vpn`, {
         type: 'ipsec.1',
         transitGatewayId: transitGateway.tgwId,
         customerGatewayId: customerGateway.ref,
+        staticRoutesOnly: firewallCgwRouting === 'static' ? true : undefined,
       });
 
       const options = new VpnTunnelOptions(scope, `VpnTunnelOptions${index}`, {
@@ -143,17 +145,17 @@ async function createCustomerGateways(props: {
       vpnTunnelOptions = {
         cgwTunnelInsideAddress1: options.getAttString('CgwInsideIpAddress1'),
         cgwTunnelOutsideAddress1: options.getAttString('CgwOutsideIpAddress1'),
-        cgwBgpAsn1: options.getAttString('CgwBgpAsn1'),
+        cgwBgpAsn1: firewallCgwRouting === 'dynamic' ? options.getAttString('CgwBgpAsn1') : undefined,
         vpnTunnelInsideAddress1: options.getAttString('VpnInsideIpAddress1'),
         vpnTunnelOutsideAddress1: options.getAttString('VpnOutsideIpAddress1'),
-        vpnBgpAsn1: options.getAttString('VpnBgpAsn1'),
+        vpnBgpAsn1: firewallCgwRouting === 'dynamic' ? options.getAttString('VpnBgpAsn1') : undefined,
         preSharedSecret1: options.getAttString('PreSharedKey1'),
         cgwTunnelInsideAddress2: options.getAttString('CgwInsideIpAddress2'),
         cgwTunnelOutsideAddress2: options.getAttString('CgwOutsideIpAddress2'),
-        cgwBgpAsn2: options.getAttString('CgwBgpAsn2'),
+        cgwBgpAsn2: firewallCgwRouting === 'dynamic' ? options.getAttString('CgwBgpAsn2') : undefined,
         vpnTunnelInsideAddress2: options.getAttString('VpnInsideIpAddress2'),
         vpnTunnelOutsideAddress2: options.getAttString('VpnOutsideIpAddress2'),
-        vpnBgpAsn2: options.getAttString('VpnBgpAsn2'),
+        vpnBgpAsn2: firewallCgwRouting === 'dynamic' ? options.getAttString('VpnBgpAsn2') : undefined,
         preSharedSecret2: options.getAttString('PreSharedKey2'),
       };
 

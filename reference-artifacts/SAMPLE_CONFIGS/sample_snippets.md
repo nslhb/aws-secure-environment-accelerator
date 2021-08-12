@@ -1,10 +1,65 @@
 # AWS Secure Environment Accelerator
 
-## **Config File Sample Snippets (Parameters not in sample config file)**
+## **Config File Sample Snippets (Parameters not in sample config files)**
+---
+## - Tweak Interface Endpoint security groups
+
+SEA v1.3.3 locked down interface endpoint security groups to 0.0.0.0/0:443 inbound, no outbound-rules
+- Some endpoints may require additional inbound ports
+- these can be specified by adding the following to the config file, for each specific interface endpoint
+- this setting overides the default port 443 for the specified endpoint(s) only
+- the below example overides the sg for the logs endpoint and the ssmmessages endpoints on all vpcs with endpoints
+
+In global-options:
+```
+    "endpoint-port-orverides": {
+      "logs": ["TCP:443", "UDP:9418"],
+      "ssmmessages": ["TCP:443", "TCP:8080"]
+    }
+```
+- additionally customers can lock down the endpoints on each vpc to specific CIDR ranges
+
+In vpc section, under interface endpoints:
+```
+	"interface-endpoints": {
+            "allowed-cidrs": ["10.0.0.0/8", "100.96.252.0/23", "100.96.250.0/23"]
+```
 
 ---
 
-- Creates DNS query logging and associate to the VPC
+## - Create a role with trust policies
+```
+{
+            "role": "Demo-Role",
+            "type": "other",
+            "policies": ["AdministratorAccess"],
+            "boundary-policy": "Default-Boundary-Policy",
+            "source-account": "operations",
+            "source-account-role": "TempAdmin",
+            "trust-policy": "none"
+}
+```
+
+---
+
+## - Manage account level SCPs
+
+- Until v1.3.3, SEA only managed SCPs on the top level OUs, where the ability to manage account level SCPs was added
+- If no account level SCP settings exist, account SCPs remain managed through AWS orgs
+- If an account level SCP setting exists, it enforces the SCPs on the account to be as specified in the config file
+
+```
+    "fun-acct": {
+      "account-name": "TheFunAccount",
+      "email": "myemail+aseaT-funacct@example.com",
+      "src-filename": "config.json",
+      "scps": ["Guardrails-Part-2", "Guardrails-Sandbox"],
+      "ou": "Sandbox"
+    }
+```
+---
+
+## - Creates DNS query logging and associate to the VPC
 
 ```
     "vpc": {
@@ -14,17 +69,22 @@
 
 ---
 
-- Update Central Logging Kinesis stream shard count as accounts are added
+## - Update Central Logging Kinesis stream shard count as accounts are added
 
 ```
     "central-log-services": {
 	  "kinesis-stream-shard-count": 2
     }
 ```
+---
+
+## - CWL retention values
+
+```"default-cwl-retention"``` valid values are one of: [1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653]
 
 ---
 
-- Override default CWL retention period (Add to any account)
+## - Override default CWL retention period (Add to any account)
 
 ```
      “cwl-retention”: 180
@@ -32,7 +92,7 @@
 
 ---
 
-- Valid options for vpc flow logs setting on each VPC
+## - Valid options for vpc flow logs setting on each VPC
 
 ```
 "flow-logs": "S3"  ---> S3, CWL, BOTH, NONE
@@ -40,7 +100,7 @@
 
 ---
 
-- Macie Frequency Supported Values:
+## - Macie Frequency Supported Values:
 
 ```
       "macie-frequency": "SIX_HOURS" ---> FIFTEEN_MINUTES, ONE_HOUR, SIX_HOURS
@@ -48,7 +108,7 @@
 
 ---
 
-- Control MAD/ADC AZ's:
+## - Control MAD/ADC AZ's:
   - if not specified and more than 2 az's exist, selects the first two defined az's in the subnet
 
 ```
@@ -57,7 +117,7 @@
 
 ---
 
-- CWL subscription exclusions example
+## - CWL subscription exclusions example
 
 ```
     "central-log-services": {
@@ -73,14 +133,14 @@
 
 ---
 
-- Add a policy to a role in the account to enable RO access to the Log Archive bucket
+## - Add a policy to a role in the account to enable RO access to the Log Archive bucket
 
 ```
    "ssm-log-archive-read-only-access": true
 ```
 
 ---
-- CloudWatch Metric Filters and Alarms
+## - CloudWatch Metric Filters and Alarms
 
 ```
   "global-options": {
@@ -128,7 +188,7 @@
 
 ---
 
-- Additional regions for Amazon CloudWatch Central Logging to S3
+## - Additional regions for Amazon CloudWatch Central Logging to S3
 
 ```
     "additional-cwl-regions": {
@@ -140,7 +200,7 @@
 
 ---
 
-- SNS Topics - If section not provided we create High,Medium,Low,Ignore SNS topics with out subscribers
+## - SNS Topics - If section not provided we create High,Medium,Low,Ignore SNS topics without subscribers
 
 ```
     "central-log-services": {
@@ -155,7 +215,7 @@
 
 ---
 
-- Cert REQUEST format (Import shown in sample)
+## - Cert REQUEST format (Import shown in sample)
 
 ```
       "certificates": [
@@ -171,7 +231,7 @@
 
 ---
 
-- Other Budget "include" fields
+## - Other Budget "include" fields
 
 ```
       "default-budgets": {
@@ -193,7 +253,7 @@
 
 ---
 
-- Cross Account Role Example
+## - Cross Account Role Example
 
 ```
           {
@@ -209,7 +269,7 @@
 
 ---
 
-- Very basic workload account example and "per account" exceptions example
+## - Very basic workload account example and "per account" exceptions example
 
 ```
   "workload-account-configs": {
@@ -232,7 +292,7 @@
 
 ---
 
-- Sample limit increases supported
+## - Sample limit increases supported
 
 ```
       "limits": {
@@ -245,7 +305,7 @@
 
 ---
 
-- v1.0.4_to_v1.0.5 upgrade MAD fix - REQUIRED ALL 1.0.4 ORIGINAL INSTALLS
+## - v1.0.4_to_v1.0.5 upgrade MAD fix - REQUIRED ALL 1.0.4 ORIGINAL INSTALLS
 
 ```
       "deployments": {
@@ -257,7 +317,7 @@
 
 ---
 
-- Sample Complex Security Group
+## - Sample Complex Security Group
 
 ```
           {
@@ -296,7 +356,7 @@
 
 ---
 
-- Sample Single AZ NATGW
+## - Sample Single AZ NATGW
 
 ```
 "natgw": {
@@ -382,7 +442,7 @@
 
 ---
 
-- Sample PER AZ NATGW
+## - Sample PER AZ NATGW
 
 ```
 "natgw": {
@@ -454,102 +514,32 @@
       ]
     },
     {
-      "name": "SandboxVPC_a"
-    },
-    {
-      "name": "SandboxVPC_b"
-    }
-  ]
-```
-
----
-
-- Sample NATGW - NOT PREFERED, but works: (uses first AZ)
-
-```
-"natgw": {
-    "subnet": {
-      "name": "Web"
-    }
-  },
-  "subnets": [
-    {
-      "name": "Web",
-      "share-to-ou-accounts": false,
-      "share-to-specific-accounts": [],
-      "definitions": [
-        {
-          "az": "a",
-          "route-table": "SandboxVPC_IGW",
-          "cidr": "10.6.32.0/20"
-        },
-        {
-          "az": "b",
-          "route-table": "SandboxVPC_IGW",
-          "cidr": "10.6.128.0/20"
-        }
-      ]
-    },
-    {
-      "name": "App",
-      "share-to-ou-accounts": false,
-      "share-to-specific-accounts": [],
-      "definitions": [
-        {
-          "az": "a",
-          "route-table": "SandboxVPC_Common",
-          "cidr": "10.6.0.0/19"
-        },
-        {
-          "az": "b",
-          "route-table": "SandboxVPC_Common",
-          "cidr": "10.6.96.0/19"
-        }
-      ]
-    },
-    {
-      "name": "Data",
-      "share-to-ou-accounts": false,
-      "share-to-specific-accounts": [],
-      "definitions": [
-        {
-          "az": "a",
-          "route-table": "SandboxVPC_Common",
-          "cidr": "10.6.48.0/20"
-        },
-        {
-          "az": "b",
-          "route-table": "SandboxVPC_Common",
-          "cidr": "10.6.144.0/20"
-        }
-      ]
-    }
-  ],
-  "route-tables": [
-    {
-      "name": "SandboxVPC_IGW",
-      "routes": [
-        {
-          "destination": "0.0.0.0/0",
-          "target": "IGW"
-        }
-      ]
-    },
-    {
-      "name": "SandboxVPC_Common",
+      "name": "SandboxVPC_a",
       "routes": [
         {
           "destination": "0.0.0.0/0",
           "target": "NATGW_Web_azA"
         }
       ]
+    },
+    {
+      "name": "SandboxVPC_b",
+      "routes": [
+        {
+          "destination": "0.0.0.0/0",
+          "target": "NATGW_Web_azB"
+        }
+      ]
     }
   ]
 ```
 
 ---
 
-- TGW Route tables plus Multiple TGWs
+
+---
+
+## - TGW Route tables plus Multiple TGWs
 
 ```
         "tgw": [
@@ -649,7 +639,7 @@
 
 ---
 
-- Creating a VPC Virtual Gateway
+## - Creating a VPC Virtual Gateway
 
 ```
           "vgw": {
@@ -692,7 +682,7 @@
 
 ---
 
-- Disable a Config rule on a per account basis - add this to either workload or mandatory accounts sections
+## - Disable a Config rule on a per account basis - add this to either workload or mandatory accounts sections
 
 ```
       "aws-config": [
@@ -705,7 +695,18 @@
 
 ---
 
-- Future description
+## - Add SCP on a per account basis - add this to either workload or mandatory accounts sections
+
+```
+      "scps": [
+        "SCP 1",
+        "SCP 2"
+      ]
+```
+
+---
+
+## - Future description
 
 ```
 {future sample}
@@ -713,7 +714,7 @@
 
 ---
 
-- Future description
+## - Future description
 
 ```
 {future sample}

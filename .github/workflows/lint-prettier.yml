@@ -28,7 +28,7 @@ jobs:
             ${{ runner.OS }}-
       - name: Install Node.js modules
         run: |
-          npm install -g pnpm
+          npm install -g pnpm@5.18.9
           pnpm install --frozen-lockfile
       - name: Analyze TypeScript files
         run: |
@@ -45,7 +45,7 @@ jobs:
           node-version: 12
       - name: Install Prettier
         run: |
-          npm install -g prettier
+          npm install -g prettier@2.2.0
       - name: Analyze TypeScript files
         run: |
           prettier --check **/*.ts

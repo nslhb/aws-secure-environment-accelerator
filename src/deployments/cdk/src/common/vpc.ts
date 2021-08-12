@@ -1,3 +1,4 @@
+import hashSum from 'hash-sum';
 import * as cdk from '@aws-cdk/core';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as config from '@aws-accelerator/common-config/src';
@@ -12,13 +13,18 @@ import { NestedStack } from '@aws-cdk/aws-cloudformation';
 import { SecurityGroup } from './security-group';
 import { StackOutput } from '@aws-accelerator/common-outputs/src/stack-output';
 import { AccountStacks } from '../common/account-stacks';
-import { TransitGatewayOutputFinder, TransitGatewayOutput } from '@aws-accelerator/common-outputs/src/transit-gateway';
+import {
+  TransitGatewayOutputFinder,
+  TransitGatewayOutput,
+  TransitGatewayAttachmentOutput,
+} from '@aws-accelerator/common-outputs/src/transit-gateway';
 import { CfnTransitGatewayAttachmentOutput } from '../deployments/transit-gateway/outputs';
 import { AddTagsToResourcesOutput } from './add-tags-to-resources-output';
 import { VpcDefaultSecurityGroup } from '@aws-accelerator/custom-resource-vpc-default-security-group';
 import { VpcOutput } from '@aws-accelerator/common-outputs/src/vpc';
 import { ModifyTransitGatewayAttachment } from '@aws-accelerator/custom-resource-ec2-modify-transit-gateway-vpc-attachment';
 import { IamRoleOutputFinder } from '@aws-accelerator/common-outputs/src/iam-role';
+import { IPv4CidrRange } from 'ip-num';
 
 export interface VpcCommonProps {
   /**
@@ -100,6 +106,7 @@ export interface VpcProps extends VpcCommonProps {
   outputs: StackOutput[];
   acceleratorName: string;
   installerVersion: string;
+  existingAttachments: TransitGatewayAttachmentOutput[];
   vpcOutput?: VpcOutput;
 }
 
@@ -134,6 +141,7 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
 
   readonly securityGroup?: SecurityGroup;
   readonly routeTableNameToIdMap: NameToIdMap = {};
+  readonly natgwNameToIdMap: NameToIdMap = {};
 
   readonly tgwAttachments: TgwAttachment[] = [];
 
@@ -153,6 +161,7 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
       acceleratorName,
       installerVersion,
       vpcOutput,
+      existingAttachments,
     } = props.vpcProps;
     const vpcName = props.vpcProps.vpcConfig.name;
 
@@ -168,14 +177,19 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
     });
     this.vpcId = vpcObj.ref;
 
-    let extendVpc;
-    if (props.vpcProps.vpcConfig.cidr2) {
-      extendVpc = new ec2.CfnVPCCidrBlock(this, `ExtendVPC`, {
-        cidrBlock: props.vpcProps.vpcConfig.cidr2.toCidrString(),
+    const extendVpc: ec2.CfnVPCCidrBlock[] = [];
+    props.vpcProps.vpcConfig.cidr2.forEach((additionalCidr, index) => {
+      let id = `ExtendVPC-${index}`;
+      if (index === 0) {
+        id = 'ExtendVPC';
+      }
+      const extendVpcCidr = new ec2.CfnVPCCidrBlock(this, id, {
+        cidrBlock: additionalCidr.toCidrString(),
         vpcId: vpcObj.ref,
       });
-      this.additionalCidrBlocks.push(props.vpcProps.vpcConfig.cidr2.toCidrString());
-    }
+      extendVpc.push(extendVpcCidr);
+      this.additionalCidrBlocks.push(additionalCidr.toCidrString());
+    });
 
     let igw;
     let igwAttach;
@@ -238,7 +252,7 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
           continue;
         }
 
-        const subnetCidr = subnetDefinition.cidr?.toCidrString() || subnetDefinition.cidr2?.toCidrString();
+        const subnetCidr = subnetDefinition.cidr?.toCidrString();
         if (!subnetCidr) {
           console.warn(`Subnet with name "${subnetName}" and AZ "${subnetDefinition.az}" does not have a CIDR block`);
           continue;
@@ -250,8 +264,14 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
           vpcId: vpcObj.ref,
           availabilityZone: `${this.region}${subnetDefinition.az}`,
         });
-        if (extendVpc) {
-          subnet.addDependsOn(extendVpc);
+        const subnetInCidr = IPv4CidrRange.fromCidr(subnetCidr);
+        for (const extensions of extendVpc) {
+          if (extensions.cidrBlock) {
+            const vpcCidr = IPv4CidrRange.fromCidr(extensions.cidrBlock);
+            if (vpcCidr.contains(subnetInCidr)) {
+              subnet.addDependsOn(extensions);
+            }
+          }
         }
         this.azSubnets.push({
           subnet,
@@ -407,6 +427,39 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
             cidr: this.cidrBlock,
           });
         } else {
+          let constructIndex: string;
+          let existingAttachment: TransitGatewayAttachmentOutput | undefined;
+          existingAttachment = existingAttachments.find(
+            att =>
+              att.accountKey === tgwAttach.account &&
+              att.region === this.region &&
+              att.cidr === this.cidrBlock &&
+              att.vpc === vpcName,
+          );
+          if (!existingAttachment) {
+            existingAttachment = existingAttachments.find(
+              att => att.accountKey === tgwAttach.account && att.region === this.region && att.cidr === this.cidrBlock,
+            );
+          }
+          if (!existingAttachment) {
+            // Generate hash
+            constructIndex = hashSum({
+              accountKey: tgwAttach.account,
+              rgion: this.region,
+              cidr: this.cidrBlock,
+              vpc: vpcName,
+            });
+          } else {
+            // This might cause failure if existing users already having multiple tgw cross account attachments in same account and region
+            constructIndex =
+              existingAttachment.constructIndex ||
+              existingAttachments
+                .findIndex(
+                  att =>
+                    att.accountKey === tgwAttach.account && att.region === this.region && att.cidr === this.cidrBlock,
+                )
+                .toString();
+          }
           new CfnTransitGatewayAttachmentOutput(this, 'TgwAttachmentOutput', {
             accountKey: tgwAttach.account,
             region: this.region,
@@ -415,8 +468,32 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
             tgwRoutePropagates,
             blackhole: blackhole ?? false,
             cidr: this.cidrBlock,
+            vpc: vpcName,
+            constructIndex,
           });
         }
+      }
+    }
+
+    const natgwProps = vpcConfig.natgw;
+    if (config.NatGatewayConfig.is(natgwProps)) {
+      const subnetConfig = natgwProps.subnet;
+      const natSubnets: AzSubnet[] = [];
+      if (subnetConfig.az) {
+        natSubnets.push(this.azSubnets.getAzSubnetForNameAndAz(subnetConfig.name, subnetConfig.az)!);
+      } else {
+        natSubnets.push(...this.azSubnets.getAzSubnetsForSubnetName(subnetConfig.name));
+      }
+
+      for (const natSubnet of natSubnets) {
+        console.log(`Creating natgw for Subnet "${natSubnet.name}" az: "${natSubnet.az}"`);
+        const natGWName = `NATGW_${natSubnet.name}_${natSubnet.az}_natgw`;
+        const eip = new ec2.CfnEIP(this, `EIP_natgw_${natSubnet.az}`);
+        const natgw = new ec2.CfnNatGateway(this, natGWName, {
+          allocationId: eip.attrAllocationId,
+          subnetId: natSubnet.id,
+        });
+        this.natgwNameToIdMap[`NATGW_${natSubnet.name}_az${natSubnet.az.toUpperCase()}`.toLowerCase()] = natgw.ref;
       }
     }
 
@@ -449,12 +526,36 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
             dynamoRoutes.push(routeTableObj);
             continue;
           } else if (route.target === 'TGW' && tgw && tgwAttachment) {
-            const tgwRoute = new ec2.CfnRoute(this, `${routeTableName}_${route.target}`, {
+            let constructName = `${routeTableName}_${route.target}`;
+            if (typeof route.destination !== 'string') {
+              console.warn(`Route for TGW only supports cidr as destination`);
+              continue;
+            }
+            if (route.destination !== '0.0.0.0/0') {
+              constructName = `${routeTableName}_${route.target}_${route.destination}`;
+            }
+            const tgwRoute = new ec2.CfnRoute(this, constructName, {
               routeTableId: routeTableObj,
-              destinationCidrBlock: route.destination as string,
+              destinationCidrBlock: route.destination,
               transitGatewayId: tgw.tgwId,
             });
             tgwRoute.addDependsOn(tgwAttachment.resource);
+            continue;
+          } else if (route.target.startsWith('NATGW_')) {
+            if (typeof route.destination !== 'string') {
+              console.warn(`Route for NATGW only supports cidr as destination`);
+              continue;
+            }
+            let constructName = `${routeTableName}_natgw_route`;
+            if (route.destination !== '0.0.0.0/0') {
+              constructName = `${routeTableName}_natgw_${route.destination}_route`;
+            }
+            const routeParams: ec2.CfnRouteProps = {
+              routeTableId: routeTableObj,
+              destinationCidrBlock: route.destination,
+              natGatewayId: this.natgwNameToIdMap[route.target.toLowerCase()],
+            };
+            new ec2.CfnRoute(this, constructName, routeParams);
             continue;
           } else {
             // Need to add for different Routes
@@ -483,70 +584,6 @@ export class Vpc extends cdk.Construct implements constructs.Vpc {
         vpcId: vpcObj.ref,
         routeTableIds: gwEndpointName.toLocaleLowerCase() === 's3' ? s3Routes : dynamoRoutes,
       });
-    }
-
-    const routeExistsForNatGW = (az: string | undefined, routeTable?: string): boolean => {
-      // Returns True/False based on routes attachement to NATGW
-      let routeExists = false;
-      for (const natRoute of routeTable ? [routeTable] : natRouteTables) {
-        const natRouteTableSubnetDef = allSubnetDefinitions.find(subnetDef => subnetDef['route-table'] === natRoute);
-        if (az && natRouteTableSubnetDef?.az === az) {
-          routeExists = true;
-          break;
-        } else if (!az && natRouteTableSubnetDef) {
-          routeExists = true;
-          break;
-        }
-      }
-      return routeExists;
-    };
-
-    // Create NAT Gateway
-    const allSubnetDefinitions = subnetsConfig.flatMap(s => s.definitions);
-    const natgwProps = vpcConfig.natgw;
-    if (config.NatGatewayConfig.is(natgwProps)) {
-      const subnetConfig = natgwProps.subnet;
-      const natSubnets: AzSubnet[] = [];
-      if (subnetConfig.az) {
-        natSubnets.push(this.azSubnets.getAzSubnetForNameAndAz(subnetConfig.name, subnetConfig.az)!);
-      } else {
-        natSubnets.push(...this.azSubnets.getAzSubnetsForSubnetName(subnetConfig.name));
-      }
-      for (const natSubnet of natSubnets) {
-        if (!routeExistsForNatGW(natSubnet.az)) {
-          // Skipping Creation of NATGW
-          console.log(
-            `Skipping Creation of NAT Gateway "${natSubnet.name}-${natSubnet.az}", as there is no routes associated to it`,
-          );
-          continue;
-        }
-        console.log(`Creating natgw for Subnet "${natSubnet.name}" az: "${natSubnet.az}"`);
-        const natGWName = `NATGW_${natSubnet.name}_${natSubnet.az}_natgw`;
-        const eip = new ec2.CfnEIP(this, `EIP_natgw_${natSubnet.az}`);
-
-        const natgw = new ec2.CfnNatGateway(this, natGWName, {
-          allocationId: eip.attrAllocationId,
-          subnetId: natSubnet.id,
-        });
-
-        // Attach NatGw Routes to Non IGW Route Tables
-        for (const natRoute of natRouteTables) {
-          const routeTableId = this.routeTableNameToIdMap[natRoute];
-          if (!routeExistsForNatGW(subnetConfig.az ? undefined : natSubnet.az, natRoute)) {
-            // Skipping Route Association of NATGW if no route specified in subnet config
-            console.log(
-              `Skipping NAT Gateway Route association to Route Table "${natRoute}", as there is no subnet is mapped to it`,
-            );
-            continue;
-          }
-          const routeParams: ec2.CfnRouteProps = {
-            routeTableId,
-            destinationCidrBlock: '0.0.0.0/0',
-            natGatewayId: natgw.ref,
-          };
-          new ec2.CfnRoute(this, `${natRoute}_natgw_route`, routeParams);
-        }
-      }
     }
 
     // Create all security groups

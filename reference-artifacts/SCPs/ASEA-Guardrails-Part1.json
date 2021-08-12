@@ -24,6 +24,7 @@
       "Sid": "Tag2",
       "Effect": "Deny",
       "NotAction": [
+        "sts:AssumeRole",
         "iam:PassRole",
         "iam:GetRole",
         "iam:GetRolePolicy",
@@ -62,8 +63,7 @@
       ],
       "Resource": [
         "arn:aws:s3:::${ACCELERATOR_PREFIX_LND}-*",
-        "arn:aws:s3:::cdktoolkit-*",
-        "arn:aws:s3:::cf-templates-*"
+        "arn:aws:s3:::cdktoolkit-*"
       ],
       "Condition": {
         "ArnNotLike": {
