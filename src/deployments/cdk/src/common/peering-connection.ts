@@ -91,7 +91,7 @@ export namespace PeeringConnection {
           if (subnet.disabled || !subnet.cidr) {
             continue;
           }
-          new ec2.CfnRoute(this, `${routeTable?.name}_pcx_${pcxRoute.vpc}_${index}`, {
+          new ec2.CfnRoute(this, `${routeTable?.name}_pcx_${pcxRoute.vpc}_${targetSubnet.name}_${index}`, {
             routeTableId,
             destinationCidrBlock: subnet.cidr.toCidrString(),
             vpcPeeringConnectionId: pcxId,
