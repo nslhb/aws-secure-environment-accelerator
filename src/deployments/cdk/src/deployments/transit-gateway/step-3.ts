@@ -251,7 +251,7 @@ function CreateAssociations(
     const routeId = transitGateway.tgwRouteTableNameToIdMap[route];
     const tgwPeeringAttachmentId = tgwPeeringAttachment.tgwAttachmentId;
 
-    new ec2.CfnTransitGatewayRouteTableAssociation(accountStack, `tgw_associate_${route}`, {
+    new ec2.CfnTransitGatewayRouteTableAssociation(accountStack, `${transitGateway.name}_tgw_associate_${route}`, {
       transitGatewayAttachmentId: tgwPeeringAttachmentId,
       transitGatewayRouteTableId: routeId,
     });
